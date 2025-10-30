@@ -132,6 +132,7 @@ function Home() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
+        // Rastgele modda (query yok) ve arama modunda değilken infinite scroll çalışsın
         if (entries[0].isIntersecting && !state.isLoadingMore && state.hasMore && !state.query) {
           fetchRandomShows();
         }
@@ -308,13 +309,13 @@ function Home() {
                   )}
                 </>
               ) : (
-                /* Rastgele mod - Infinite scroll veya Filtrelenmiş */
+                /* Rastgele mod - Infinite scroll */
                 <>
                   {filteredShows.length === 0 && hasActiveFilters ? (
                     <div className="empty-state">
                       <div className="empty-icon">🔍</div>
                       <h3>Filtre Sonucu Bulunamadı</h3>
-                      <p>Seçtiğiniz filtrelere uygun dizi bulunamadı. Lütfen filtre seçimlerinizi değiştirin.</p>
+                      <p>Seçtiğiniz filtrelere uygun dizi bulunamadı. Aşağı kaydırdıkça daha fazla dizi yüklenecek.</p>
                     </div>
                   ) : (
                     <>
@@ -323,20 +324,18 @@ function Home() {
                         onAddToWatchlist={handleAddToWatchlist}
                         watchlist={state.watchlist}
                       />
-                      
-                      {/* Infinite scroll için observer target - sadece filtre yoksa */}
-                      {!hasActiveFilters && (
-                        <div ref={observerTarget} className="observer-target">
-                          {state.isLoadingMore && (
-                            <div className="loading-more">
-                              <div className="spinner-small"></div>
-                              <p>Daha fazla dizi yükleniyor...</p>
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </>
                   )}
+                  
+                  {/* Infinite scroll için observer target - her zaman aktif */}
+                  <div ref={observerTarget} className="observer-target">
+                    {state.isLoadingMore && (
+                      <div className="loading-more">
+                        <div className="spinner-small"></div>
+                        <p>Daha fazla dizi yükleniyor...</p>
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
             </>
